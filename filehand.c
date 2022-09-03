@@ -1,23 +1,24 @@
 #include<stdio.h>
+
 #include<stdlib.h>
 struct student
 {
  int rollno;
  char name[30];
  float mark;
-}stud;
+}s;
 // FUNCTION TO INSERT RECORDS TO THE FILE
 void insert()
 {
  FILE *fp;
  fp = fopen("Record", "a");
  printf("Enter the Roll no :");
- scanf("%d", &stud.rollno);
+ scanf("%d", &s.rollno);
  printf("Enter the Name :");
- scanf("%s",stud.name);
+ scanf("%s",s.name);
  printf("Enter the mark :");
- scanf("%f", &stud.mark);
- fwrite(&stud, sizeof(stud), 1, fp);
+ scanf("%f", &s.mark);
+ fwrite(&s, sizeof(s), 1, fp);
  fclose(fp);
 }
 // FUNCTION TO DISPLAY RECORDS
@@ -26,8 +27,8 @@ void disp()
  FILE *fp1;
  fp1 = fopen("Record", "r");
  printf("\nRoll Number\tName\tMark\n\n");
- while (fread(&stud, sizeof(stud), 1, fp1))
- printf(" %d\t\t%s\t%.2f\n", stud.rollno, stud.name, stud.mark);
+ while (fread(&s, sizeof(s), 1, fp1))
+ printf(" %d\t\t%s\t%.2f\n", s.rollno, s.name, s.mark);
  fclose(fp1);
 }
 int avlrollno(int rno)
@@ -37,9 +38,9 @@ int avlrollno(int rno)
  fp = fopen("Record", "r");
  while (!feof(fp))
  {
-  fread(&stud, sizeof(stud), 1, fp);
+  fread(&s, sizeof(s), 1, fp);
 
-  if (rno == stud.rollno)
+  if (rno == s.rollno)
   {
    fclose(fp);
    return 1;
@@ -52,7 +53,7 @@ int avlrollno(int rno)
 void search()
 {
  FILE *fp2;
- int r, s, avl;
+ int r, sn, avl;
  printf("\nEnter the Roll no you want to search :");
  scanf("%d", &r);
  avl = avlrollno(r);
@@ -61,14 +62,14 @@ void search()
  else
  {
   fp2 = fopen("Record", "r");
-  while (fread(&stud, sizeof(stud), 1, fp2))
+  while (fread(&s, sizeof(s), 1, fp2))
   {
-   s = stud.rollno;
-   if (s == r)
+   sn = stud.rollno;
+   if (sn == r)
    {
-    printf("\nRoll no = %d", stud.rollno);
-    printf("\nName = %s", stud.name);
-    printf("\nMark = %.2f\n", stud.mark);
+    printf("\nRoll no = %d", s.rollno);
+    printf("\nName = %s", s.name);
+    printf("\nMark = %.2f\n", s.mark);
    }
   }
   fclose(fp2);
@@ -81,7 +82,7 @@ void deletefile()
 {
  FILE *fpo;
  FILE *fpt;
- int r, s;
+ int r, sp;
  printf("Enter the Roll no you want to delete :");
  scanf("%d", &r);
  if (avlrollno(r) == 0)
@@ -90,18 +91,18 @@ void deletefile()
  {
   fpo = fopen("Record", "r");
   fpt = fopen("TempFile", "w");
-  while (fread(&stud, sizeof(stud), 1, fpo))
+  while (fread(&s, sizeof(s), 1, fpo))
   {
-   s = stud.rollno;
-   if (s != r)
+   sp = stud.rollno;
+   if (sp != r)
     fwrite(&stud, sizeof(stud), 1, fpt);
   }
   fclose(fpo);
   fclose(fpt);
   fpo = fopen("Record", "w");
   fpt = fopen("TempFile", "r");
-  while (fread(&stud, sizeof(stud), 1, fpt))
-   fwrite(&stud, sizeof(stud), 1, fpo);
+  while (fread(&s, sizeof(s), 1, fpt))
+   fwrite(&s, sizeof(s), 1, fpo);
   printf("\nRECORD DELETED\n");
   fclose(fpo);
   fclose(fpt);
@@ -114,7 +115,7 @@ void update()
  int avl;
  FILE *fpt;
  FILE *fpo;
- int s, r, ch;
+ int sp, r, ch;
  printf("Enter roll number to update:");
  scanf("%d", &r);
  avl = avlrollno(r);
@@ -126,11 +127,11 @@ void update()
  {
   fpo = fopen("Record", "r");
   fpt = fopen("TempFile", "w");
-  while (fread(&stud, sizeof(stud), 1, fpo))
+  while (fread(&s, sizeof(s), 1, fpo))
   {
-   s = stud.rollno;
-   if (s != r)
-    fwrite(&stud, sizeof(stud), 1, fpt);
+   sp = s.rollno;
+   if (sp != r)
+    fwrite(&s, sizeof(s), 1, fpt);
    else
    {
     printf("\n\t1. Update Name of Roll Number %d", r);
@@ -142,32 +143,32 @@ void update()
     {
     case 1:
      printf("Enter Name:");
-     scanf("%s",stud.name);
+     scanf("%s",s.name);
      break;
     case 2:
      printf("Enter Mark : ");
-     scanf("%f", &stud.mark);
+     scanf("%f", &s.mark);
      break;
     case 3:
      printf("Enter Name: ");
-     scanf("%s",stud.name);
+     scanf("%s",s.name);
      printf("Enter Mark: ");
-     scanf("%f", &stud.mark);
+     scanf("%f", &s.mark);
      break;
     default:
      printf("Invalid Selection");
      break;
     }
-    fwrite(&stud, sizeof(stud), 1, fpt);
+    fwrite(&s, sizeof(s), 1, fpt);
    }
   }
   fclose(fpo);
   fclose(fpt);
   fpo = fopen("Record", "w");
   fpt = fopen("TempFile", "r");
-  while (fread(&stud, sizeof(stud), 1, fpt))
+  while (fread(&s, sizeof(s), 1, fpt))
   {
-   fwrite(&stud, sizeof(stud), 1, fpo);
+   fwrite(&s, sizeof(s), 1, fpo);
   }
   fclose(fpo);
   fclose(fpt);
@@ -180,9 +181,9 @@ void sort()
  int a[20], count = 0, i, j, t, c;
  FILE *fpo;
  fpo = fopen("Record", "r");
- while (fread(&stud, sizeof(stud), 1, fpo))
+ while (fread(&s, sizeof(s), 1, fpo))
  {
-  a[count] = stud.rollno;
+  a[count] = s.rollno;
   count++;
  }
  c = count;
@@ -203,10 +204,10 @@ void sort()
  for (i = 0; i<count; i++)
  {
   rewind(fpo);
-  while (fread(&stud, sizeof(stud), 1, fpo))
+  while (fread(&s, sizeof(s), 1, fpo))
   {
-   if (a[i] == stud.rollno)
-    printf("\n %d\t\t %s \t\t %2f",stud.rollno, stud.name, stud.mark);
+   if (a[i] == s.rollno)
+    printf("\n %d\t\t %s \t\t %2f",s.rollno, s.name, s.mark);
   }
 
  }
@@ -219,7 +220,7 @@ int empty()
  int c = 0;
  FILE *fp;
  fp = fopen("Record", "r");
- while (fread(&stud, sizeof(stud), 1, fp))
+ while (fread(&s, sizeof(s), 1, fp))
   c = 1;
  fclose(fp);
  return c;
